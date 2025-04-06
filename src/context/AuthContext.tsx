@@ -3,9 +3,11 @@ import React, { createContext, useReducer, useContext, useEffect } from "react";
 type AuthState = {
     token: string | null;
     username: string | null;
+    initialStateLoaded: boolean;
 };
 
 type AuthAction =
+    | { type: "INITIALIZE" }
     | { type: "LOGIN"; payload: { token: string; username: string } }
     | { type: "LOGOUT" }
     | { type: "SET_TOKEN"; payload: string }
@@ -14,14 +16,21 @@ type AuthAction =
 const initialState: AuthState = {
     token: null,
     username: null,
+    initialStateLoaded: false,
 };
 
 const authReducer = (state: AuthState, action: AuthAction): AuthState => {
     switch (action.type) {
+        case "INITIALIZE":
+            return {
+                ...state,
+                initialStateLoaded: true,
+            };
         case "LOGIN":
             const loginData = {
                 token: action.payload.token,
                 username: action.payload.username,
+                initialStateLoaded: true,
             };
             localStorage.setItem("authData", JSON.stringify(loginData));
             return loginData;
@@ -35,7 +44,7 @@ const authReducer = (state: AuthState, action: AuthAction): AuthState => {
             return updatedUsername;
         case "LOGOUT":
             localStorage.removeItem("authData");
-            return { token: null, username: null };
+            return { token: null, username: null, initialStateLoaded: true };
         default:
             return state;
     }
@@ -51,6 +60,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     useEffect(() => {
         const authData = localStorage.getItem("authData");
+        dispatch({ type: "INITIALIZE" });
         if (authData) {
             try {
                 const parsed = JSON.parse(authData);
