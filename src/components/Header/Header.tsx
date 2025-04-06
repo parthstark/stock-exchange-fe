@@ -1,5 +1,6 @@
 import React, { useMemo } from "react";
 import { useAuth } from "../../context/AuthContext";
+import Avatar from "./base/Avatar";
 
 const Header: React.FC = () => {
     const {
@@ -15,7 +16,7 @@ const Header: React.FC = () => {
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
                 {/* Top row: logo and avatar */}
                 <div className="flex justify-between items-center w-full md:w-auto">
-                    <h2 className="text-2xl font-bold flex items-center gap-2">
+                    <h2 className="text-2xl font-bold flex items-center gap-2 cursor-pointer">
                         📈 STOCK EXCHANGE
                     </h2>
                     {/* Avatar (only on mobile) */}
@@ -35,19 +36,6 @@ const Header: React.FC = () => {
                 <Avatar initials={initials} className="hidden md:flex" />
             </div>
         </header>
-    );
-};
-
-type AvatarProps = {
-    initials: string;
-    className?: string;
-};
-
-const Avatar: React.FC<AvatarProps> = ({ initials, className = "" }) => {
-    return (
-        <div className={`w-12 h-12 rounded-full bg-gray-300 flex items-center justify-center ${className}`}>
-            <span className="text-black text-lg">{initials}</span>
-        </div>
     );
 };
 

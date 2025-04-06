@@ -13,21 +13,21 @@ const UserActions: React.FC = () => {
                     <div className="text-xl font-medium">Holdings</div>
 
                     <div className="flex justify-between items-center">
-                        <div className="text-md">TATA</div>
-                        <div className="text-md text-right">100</div>
-                        <div className="text-md text-right">222.22</div>
+                        <div className="w-1/3 text-left text-md">TATA</div>
+                        <div className="w-1/3 text-center text-md">100000</div>
+                        <div className="w-1/3 text-right text-md">222.22</div>
                     </div>
 
                     <div className="flex justify-between items-center">
-                        <div className="text-md">RELIANCE</div>
-                        <div className="text-md text-right">15</div>
-                        <div className="text-md text-right">897.00</div>
+                        <div className="w-1/3 text-left text-md">RELIANCE</div>
+                        <div className="w-1/3 text-center text-md">15</div>
+                        <div className="w-1/3 text-right text-md">897.00</div>
                     </div>
 
                     <div className="flex justify-between items-center">
-                        <div className="text-md">ZOMATO</div>
-                        <div className="text-md text-right">25</div>
-                        <div className="text-md text-right">1220.88</div>
+                        <div className="w-1/3 text-left text-md">ZOMATO</div>
+                        <div className="w-1/3 text-center text-md">25</div>
+                        <div className="w-1/3 text-right text-md">1220.88</div>
                     </div>
                 </div>
             </div>
@@ -36,9 +36,9 @@ const UserActions: React.FC = () => {
                 <div className="text-xl font-medium">Open Orders</div>
 
                 <div className="flex justify-between items-center">
-                    <div className="text-md">ITBEES</div>
-                    <div className="text-md text-right">100</div>
-                    <div className="text-md text-right">554.01</div>
+                    <div className="w-1/3 text-left text-md">ITBEES</div>
+                    <div className="w-1/3 text-center text-md">100</div>
+                    <div className="w-1/3 text-right text-md">554.01</div>
                 </div>
             </div>
         </div>
