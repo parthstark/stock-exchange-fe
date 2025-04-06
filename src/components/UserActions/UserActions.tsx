@@ -2,7 +2,7 @@ import React from "react";
 
 const UserActions: React.FC = () => {
     return (
-        <div className="space-y-12 w-full md:w-1/3 px-0 md:px-10">
+        <div className="space-y-12 w-full md:w-1/3 p-6">
             <div className="space-y-4">
                 <div className="flex justify-between items-center">
                     <div className="text-xl font-medium">Balance</div>
