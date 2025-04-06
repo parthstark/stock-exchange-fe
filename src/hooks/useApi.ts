@@ -1,5 +1,6 @@
 import { useState } from "react";
 import api from "../api/axios";
+import { useDemoMode } from "../context/DemoModeContext";
 
 type Method = "GET" | "POST" | "DELETE";
 
@@ -13,9 +14,23 @@ export function useApi(): UseApiResponse {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
+    const { demoMode } = useDemoMode();
+
     const request = async (url: string, method: Method = "GET", body?: any) => {
         setLoading(true);
         setError(null);
+
+        if (demoMode) {
+            return new Promise((resolve) => {
+                setTimeout(() => {
+                    setLoading(false);
+                    resolve({
+                        token: 'demo-token',
+                    });
+                }, 1000);
+            }
+            );
+        }
 
         try {
             const response = await api.request({

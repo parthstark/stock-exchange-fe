@@ -2,11 +2,14 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useApi } from "../hooks/useApi";
 import { useAuth } from "../context/AuthContext";
+import { useDemoMode } from "../context/DemoModeContext";
 
 const Login = () => {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
+
     const { dispatch } = useAuth();
+    const { demoMode, setDemoMode } = useDemoMode();
     const navigate = useNavigate();
 
     const { loading, error, request } = useApi();
@@ -27,8 +30,24 @@ const Login = () => {
         }
     };
 
+    const handleDemoToggle = () => {
+        setDemoMode(!demoMode);
+    };
+
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="relative min-h-screen flex items-center justify-center bg-gray-50">
+            {/* Demo Mode Toggle */}
+            <button
+                onClick={handleDemoToggle}
+                className={`absolute top-6 right-6 text-sm px-3 py-1 rounded-full transition font-medium
+        ${demoMode
+                        ? "bg-green-100 text-green-700 hover:bg-green-200"
+                        : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                    }`}
+            >
+                {demoMode ? "Demo Mode ✅" : "Demo Mode ❌"}
+            </button>
+
             <form
                 onSubmit={handleLogin}
                 className="bg-white p-8 rounded-lg shadow-md w-full max-w-sm space-y-6"

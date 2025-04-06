@@ -55,6 +55,7 @@ const Avatar: React.FC<AvatarProps> = ({ initials, className }) => {
                         Hi {username} !
                     </div>
 
+                    {/* Divider */}
                     <div className="h-px bg-gray-200 mx-3" />
 
                     <button
