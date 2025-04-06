@@ -9,17 +9,17 @@ const Login = () => {
     const { dispatch } = useAuth();
     const navigate = useNavigate();
 
-    const { data, loading, error, request } = useApi();
+    const { loading, error, request } = useApi();
 
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
-        await request("v1/auth/login", "POST", { username, password });
+        const response = await request("v1/auth/login", "POST", { username, password });
 
-        if (data?.token) {
+        if (response?.token) {
             dispatch({
                 type: "LOGIN",
                 payload: {
-                    token: data.token,
+                    token: response.token,
                     username,
                 },
             });

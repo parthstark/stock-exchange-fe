@@ -4,14 +4,12 @@ import api from "../api/axios";
 type Method = "GET" | "POST" | "DELETE";
 
 interface UseApiResponse {
-    data: any;
     loading: boolean;
     error: string | null;
-    request: (url: string, method?: Method, body?: any) => Promise<void>;
+    request: (url: string, method?: Method, body?: any) => Promise<any>;
 }
 
 export function useApi(): UseApiResponse {
-    const [data, setData] = useState<any>(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
@@ -25,7 +23,7 @@ export function useApi(): UseApiResponse {
                 method,
                 data: body,
             });
-            setData(response.data);
+            return response?.data;
         } catch (err: any) {
             setError(err.response?.data?.message || "something went wrong");
         } finally {
@@ -33,5 +31,5 @@ export function useApi(): UseApiResponse {
         }
     };
 
-    return { data, loading, error, request };
+    return { loading, error, request };
 }
