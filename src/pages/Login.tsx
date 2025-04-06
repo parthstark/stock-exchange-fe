@@ -23,7 +23,7 @@ const Login = () => {
                     username,
                 },
             });
-            navigate("/app");
+            navigate("/");
         }
     };
 
