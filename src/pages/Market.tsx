@@ -1,14 +1,10 @@
-import Header from "../components/Header";
 import TradingChart from "../components/TradingChart";
 import OrderBook from "../components/Orderbook";
 import PlaceOrder from "../components/PlaceOrder";
 
 const Market = () => {
-
     return (
         <div className="font-sans">
-            <Header />
-
             <div className="flex flex-col lg:flex-row">
                 <div className="w-full lg:w-1/2 my-2">
                     <TradingChart />
@@ -79,3 +75,24 @@ const bids = [
     { price: 77859.4, volume: 0.02 },
     { price: 77857.1, volume: 0.01 },
 ];
+
+// SHIMMER
+// <div className="flex flex-col lg:flex-row">
+//     <div className="w-full lg:w-1/2 my-2 animate-pulse">
+//         <div className="bg-gray-100 h-160 m-4 rounded-md"></div>
+//     </div>
+
+//     Divider
+//     <div className="h-px bg-gray-300 md:h-auto md:w-px mt-4 mb-2 md:my-0" />
+
+//     <div className="w-full lg:w-1/4 my-2 animate-pulse">
+//         <div className="bg-gray-100 h-160 m-4 rounded-md"></div>
+//     </div>
+
+//     Divider
+//     <div className="h-px bg-gray-300 md:h-auto md:w-px mt-4 mb-2 md:my-0" />
+
+//     <div className="w-full lg:w-1/4 my-2 animate-pulse">
+//         <div className="bg-gray-100 h-160 m-4 rounded-md"></div>
+//     </div>
+// </div>

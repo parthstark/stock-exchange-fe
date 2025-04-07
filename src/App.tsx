@@ -4,23 +4,43 @@ import Dashboard from "./pages/Dashboard";
 import ProtectedRoute from "./ProtectedRoute";
 import NotFound from "./pages/NotFound";
 import Market from "./pages/Market";
+import Header from "./components/Header";
+
+const ProtectedLayout = ({ children }: { children: React.ReactNode }) => (
+  <ProtectedRoute>
+    <div className="font-sans">
+      <Header />
+      {children}
+    </div>
+  </ProtectedRoute>
+);
 
 function App() {
   return (
     <Routes>
+      {/* Public Route */}
       <Route path="/login" element={<Login />} />
-      <Route path="/"
+
+      {/* Protected Routes with persistent Header */}
+      <Route
+        path="/"
         element={
-          <ProtectedRoute>
+          <ProtectedLayout>
             <Dashboard />
-          </ProtectedRoute>
-        } />
-      <Route path="/market/:name"
+          </ProtectedLayout>
+        }
+      />
+
+      <Route
+        path="/market/:name"
         element={
-          <ProtectedRoute>
+          <ProtectedLayout>
             <Market />
-          </ProtectedRoute>
-        } />
+          </ProtectedLayout>
+        }
+      />
+
+      {/* Catch-All */}
       <Route path="*" element={<NotFound />} />
     </Routes>
   );
