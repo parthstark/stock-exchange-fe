@@ -3,6 +3,7 @@ import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import ProtectedRoute from "./ProtectedRoute";
 import NotFound from "./pages/NotFound";
+import Market from "./pages/Market";
 
 function App() {
   return (
@@ -12,6 +13,12 @@ function App() {
         element={
           <ProtectedRoute>
             <Dashboard />
+          </ProtectedRoute>
+        } />
+      <Route path="/market/:name"
+        element={
+          <ProtectedRoute>
+            <Market />
           </ProtectedRoute>
         } />
       <Route path="*" element={<NotFound />} />
