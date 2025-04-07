@@ -5,22 +5,22 @@ import PlaceOrder from "../components/PlaceOrder";
 const Market = () => {
     return (
         <div className="font-sans">
-            <div className="flex flex-col lg:flex-row">
-                <div className="w-full lg:w-1/2 my-2">
+            <div className="flex flex-col md:flex-row">
+                <div className="w-full md:w-1/2 my-2">
                     <TradingChart />
                 </div>
 
                 {/* Divider*/}
                 <div className="h-px bg-gray-300 md:h-auto md:w-px mt-4 mb-2 md:my-0" />
 
-                <div className="w-full lg:w-1/4 my-2">
+                <div className="w-full md:w-1/4 my-2">
                     <OrderBook asks={asks} bids={bids} />
                 </div>
 
                 {/* Divider*/}
                 <div className="h-px bg-gray-300 md:h-auto md:w-px mt-4 mb-2 md:my-0" />
 
-                <div className="w-full lg:w-1/4 my-2">
+                <div className="w-full md:w-1/4 my-2">
                     <PlaceOrder />
                 </div>
             </div>
@@ -77,22 +77,22 @@ const bids = [
 ];
 
 // SHIMMER
-// <div className="flex flex-col lg:flex-row">
-//     <div className="w-full lg:w-1/2 my-2 animate-pulse">
+// <div className="flex flex-col md:flex-row">
+//     <div className="w-full md:w-1/2 my-2 animate-pulse">
 //         <div className="bg-gray-100 h-160 m-4 rounded-md"></div>
 //     </div>
 
 //     Divider
 //     <div className="h-px bg-gray-300 md:h-auto md:w-px mt-4 mb-2 md:my-0" />
 
-//     <div className="w-full lg:w-1/4 my-2 animate-pulse">
+//     <div className="w-full md:w-1/4 my-2 animate-pulse">
 //         <div className="bg-gray-100 h-160 m-4 rounded-md"></div>
 //     </div>
 
 //     Divider
 //     <div className="h-px bg-gray-300 md:h-auto md:w-px mt-4 mb-2 md:my-0" />
 
-//     <div className="w-full lg:w-1/4 my-2 animate-pulse">
+//     <div className="w-full md:w-1/4 my-2 animate-pulse">
 //         <div className="bg-gray-100 h-160 m-4 rounded-md"></div>
 //     </div>
 // </div>

@@ -14,7 +14,10 @@ const TradingChart = () => {
 
     const handleResize = () => {
         if (chartContainerRef.current && chartRef.current) {
-            chartRef.current.resize(chartContainerRef.current.clientWidth, 300);
+            chartRef.current.resize(
+                chartContainerRef.current.clientWidth,
+                chartContainerRef.current.clientHeight
+            );
         }
     };
 
@@ -42,7 +45,7 @@ const TradingChart = () => {
     return (
         <div className="w-full h-full p-4">
             <h2 className="text-xl font-bold text-gray-800">Chart</h2>
-            <div ref={chartContainerRef} className="w-full h-9/10 py-6" />
+            <div ref={chartContainerRef} className="w-full h-[300px] md:h-[600px] py-6" />
         </div>
     );
 };
