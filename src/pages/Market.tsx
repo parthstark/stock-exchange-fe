@@ -2,7 +2,37 @@ import Header from "../components/Header";
 import TradingChart from "../components/TradingChart";
 import OrderBook from "../components/Orderbook";
 import PlaceOrder from "../components/PlaceOrder";
-import { useParams } from "react-router-dom";
+
+const Market = () => {
+
+    return (
+        <div className="font-sans">
+            <Header />
+
+            <div className="flex flex-col lg:flex-row">
+                <div className="w-full lg:w-1/2 my-2">
+                    <TradingChart />
+                </div>
+
+                {/* Divider*/}
+                <div className="h-px bg-gray-300 md:h-auto md:w-px mt-4 mb-2 md:my-0" />
+
+                <div className="w-full lg:w-1/4 my-2">
+                    <OrderBook asks={asks} bids={bids} />
+                </div>
+
+                {/* Divider*/}
+                <div className="h-px bg-gray-300 md:h-auto md:w-px mt-4 mb-2 md:my-0" />
+
+                <div className="w-full lg:w-1/4 my-2">
+                    <PlaceOrder />
+                </div>
+            </div>
+        </div>
+    );
+};
+
+export default Market;
 
 const asks = [
     { price: 77900.1, volume: 0.01 },
@@ -49,37 +79,3 @@ const bids = [
     { price: 77859.4, volume: 0.02 },
     { price: 77857.1, volume: 0.01 },
 ];
-
-
-
-const Market = () => {
-    const { name } = useParams<{ name: string }>();
-
-    return (
-        <div className="font-sans">
-            <Header />
-
-            <div className="flex flex-col lg:flex-row">
-                <div className="w-full lg:w-1/2 my-2 mx-4">
-                    <TradingChart name={name} />
-                </div>
-
-                {/* Divider*/}
-                <div className="h-px bg-gray-300 md:h-auto md:w-px mt-4 mb-2 md:my-0" />
-
-                <div className="w-full lg:w-1/4 my-2">
-                    <OrderBook asks={asks} bids={bids} />
-                </div>
-
-                {/* Divider*/}
-                <div className="h-px bg-gray-300 md:h-auto md:w-px mt-4 mb-2 md:my-0" />
-
-                <div className="w-full lg:w-1/4 my-2">
-                    <PlaceOrder />
-                </div>
-            </div>
-        </div>
-    );
-};
-
-export default Market;
