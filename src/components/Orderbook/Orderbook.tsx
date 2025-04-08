@@ -9,8 +9,10 @@ interface Props {
 }
 
 const OrderBook = ({ asks, bids }: Props) => {
-    const maxVolume = Math.max(
-        ...asks.map((a) => a.volume),
+    const maxAskVolume = Math.max(
+        ...asks.map((a) => a.volume)
+    );
+    const maxBidVolume = Math.max(
         ...bids.map((b) => b.volume)
     );
 
@@ -35,10 +37,8 @@ const OrderBook = ({ asks, bids }: Props) => {
             <div className="h-px bg-gray-200" />
 
             {/* Asks */}
-            {asks.map((ask, i) => {
-                if (i >= 10) return null; // Limit to 10 asks
-                const width = (ask.volume / maxVolume) * 100;
-
+            {asks.slice(-10).map((ask, i) => {
+                const width = (ask.volume / maxAskVolume) * 150;
                 return (
                     <div
                         key={`ask-${i}`}
@@ -58,10 +58,8 @@ const OrderBook = ({ asks, bids }: Props) => {
             <div className="text-center font-semibold text-green-600 py-1 text-sm">77,900.6</div>
 
             {/* Bids */}
-            {bids.map((bid, i) => {
-                if (i >= 10) return null; // Limit to 10 bids
-                const width = (bid.volume / maxVolume) * 100;
-
+            {bids.slice(0, 10).map((bid, i) => {
+                const width = (bid.volume / maxBidVolume) * 150;
                 return (
                     <div
                         key={`bid-${i}`}
@@ -70,7 +68,7 @@ const OrderBook = ({ asks, bids }: Props) => {
                         <div className="z-10">{bid.price.toFixed(1)}</div>
                         <div className="text-right z-10">{bid.volume.toFixed(5)}</div>
                         <div
-                            className="absolute left-0 top-0 h-full bg-green-100"
+                            className="absolute right-0 top-0 h-full bg-green-100"
                             style={{ width: `${width}%` }}
                         />
                     </div>
