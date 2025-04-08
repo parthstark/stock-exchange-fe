@@ -40,7 +40,7 @@ export const MarketDataProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     useEffect(() => {
         const fetchTickers = async () => {
             try {
-                const response = await request("v1/market/tickers");
+                const response = await request("/v1/market/tickers");
                 dispatch({ type: "SET_TICKERS", payload: response?.tickers });
             } catch (err: any) {
                 dispatch({ type: "SET_TICKERS", payload: [] });

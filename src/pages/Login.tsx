@@ -16,7 +16,7 @@ const Login = () => {
 
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
-        const response = await request("v1/auth/login", "POST", { username, password });
+        const response = await request("/v1/auth/login", "POST", { username, password });
 
         if (response?.token) {
             dispatch({

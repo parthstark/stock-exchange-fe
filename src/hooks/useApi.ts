@@ -1,6 +1,7 @@
+import axios from "axios";
 import { useState } from "react";
-import api from "../api/axios";
 import { useDemoMode } from "../context/DemoModeContext";
+import { useUser } from "../context/UserContext";
 
 type Method = "GET" | "POST" | "DELETE";
 
@@ -10,11 +11,16 @@ interface UseApiResponse {
     request: (url: string, method?: Method, body?: any) => Promise<any>;
 }
 
+const api = axios.create({
+    baseURL: "http://localhost:3000/api/",
+});
+
 export function useApi(): UseApiResponse {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
     const { demoMode } = useDemoMode();
+    const { state: { token } } = useUser();
 
     const request = async (url: string, method: Method = "GET", body?: any) => {
         setLoading(true);
@@ -43,6 +49,9 @@ export function useApi(): UseApiResponse {
                 url,
                 method,
                 data: body,
+                headers: {
+                    'Authorization': token
+                }
             });
             return response?.data;
         } catch (err: any) {

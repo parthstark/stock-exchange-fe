@@ -1,4 +1,5 @@
 import React from "react";
+import OpenOrders from "../OpenOrders";
 
 const UserActions: React.FC = () => {
     return (
@@ -32,15 +33,7 @@ const UserActions: React.FC = () => {
                 </div>
             </div>
 
-            <div className="space-y-1">
-                <div className="text-xl font-medium">Open Orders</div>
-
-                <div className="flex justify-between items-center">
-                    <div className="w-1/3 text-left text-md">ITBEES</div>
-                    <div className="w-1/3 text-center text-md">100</div>
-                    <div className="w-1/3 text-right text-md">554.01</div>
-                </div>
-            </div>
+            <OpenOrders />
         </div>
     );
 };
