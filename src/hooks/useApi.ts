@@ -2,6 +2,7 @@ import axios from "axios";
 import { useState } from "react";
 import { useDemoMode } from "../context/DemoModeContext";
 import { useUser } from "../context/UserContext";
+import { demoResponseData } from "../constants/constants";
 
 type Method = "GET" | "POST" | "DELETE";
 
@@ -23,26 +24,10 @@ export function useApi(): UseApiResponse {
     const { state: { token } } = useUser();
 
     const request = async (url: string, method: Method = "GET", body?: any) => {
+        if (demoMode) return demoResponseData;
+
         setLoading(true);
         setError(null);
-
-        if (demoMode) {
-            return {
-                token: 'demo-token',
-                tickers: [
-                    'TATA',
-                    'INFY',
-                    'RELIANCE',
-                    'HDFC',
-                    'ICICI',
-                    'TCS',
-                    'LT',
-                    'HINDUNILVR',
-                    'KOTAKBANK',
-                    'AXISBANK',
-                ]
-            }
-        }
 
         try {
             const response = await api.request({
