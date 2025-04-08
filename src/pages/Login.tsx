@@ -1,14 +1,14 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useApi } from "../hooks/useApi";
-import { useAuth } from "../context/AuthContext";
+import { useUser } from "../context/UserContext";
 import { useDemoMode } from "../context/DemoModeContext";
 
 const Login = () => {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
 
-    const { dispatch } = useAuth();
+    const { dispatch } = useUser();
     const { demoMode, setDemoMode } = useDemoMode();
     const navigate = useNavigate();
 

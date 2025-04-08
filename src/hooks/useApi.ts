@@ -21,15 +21,21 @@ export function useApi(): UseApiResponse {
         setError(null);
 
         if (demoMode) {
-            return new Promise((resolve) => {
-                setTimeout(() => {
-                    setLoading(false);
-                    resolve({
-                        token: 'demo-token',
-                    });
-                }, 1000);
+            return {
+                token: 'demo-token',
+                tickers: [
+                    'TATA',
+                    'INFY',
+                    'RELIANCE',
+                    'HDFC',
+                    'ICICI',
+                    'TCS',
+                    'LT',
+                    'HINDUNILVR',
+                    'KOTAKBANK',
+                    'AXISBANK',
+                ]
             }
-            );
         }
 
         try {

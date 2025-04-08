@@ -1,12 +1,12 @@
 import React, { useMemo } from "react";
-import { useAuth } from "../../context/AuthContext";
+import { useUser } from "../../context/UserContext";
 import Avatar from "./base/Avatar";
 import { useNavigate } from "react-router-dom";
 
 const Header: React.FC = () => {
     const {
         state: { username },
-    } = useAuth();
+    } = useUser();
 
     const initials = useMemo(() => {
         return username?.slice(0, 2).toUpperCase() || "";

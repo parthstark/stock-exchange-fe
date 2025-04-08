@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import { useAuth } from "../../../context/AuthContext";
+import { useUser } from "../../../context/UserContext";
 import { useNavigate } from "react-router-dom";
 
 interface AvatarProps {
@@ -14,7 +14,7 @@ const Avatar: React.FC<AvatarProps> = ({ initials, className }) => {
     const {
         state: { username },
         dispatch,
-    } = useAuth();
+    } = useUser();
 
     const dropdownRef = useRef<HTMLDivElement | null>(null);
 

@@ -1,25 +1,25 @@
 import React, { createContext, useReducer, useContext, useEffect } from "react";
 
-type AuthState = {
+type UserState = {
     token: string | null;
     username: string | null;
     initialStateLoaded: boolean;
 };
 
-type AuthAction =
+type UserAction =
     | { type: "INITIALIZE" }
     | { type: "LOGIN"; payload: { token: string; username: string } }
     | { type: "LOGOUT" }
     | { type: "SET_TOKEN"; payload: string }
     | { type: "SET_USERNAME"; payload: string };
 
-const initialState: AuthState = {
+const initialState: UserState = {
     token: null,
     username: null,
     initialStateLoaded: false,
 };
 
-const authReducer = (state: AuthState, action: AuthAction): AuthState => {
+const userReducer = (state: UserState, action: UserAction): UserState => {
     switch (action.type) {
         case "INITIALIZE":
             return {
@@ -32,52 +32,52 @@ const authReducer = (state: AuthState, action: AuthAction): AuthState => {
                 username: action.payload.username,
                 initialStateLoaded: true,
             };
-            localStorage.setItem("authData", JSON.stringify(loginData));
+            localStorage.setItem("userData", JSON.stringify(loginData));
             return loginData;
         case "SET_TOKEN":
             const updatedToken = { ...state, token: action.payload };
-            localStorage.setItem("authData", JSON.stringify(updatedToken));
+            localStorage.setItem("userData", JSON.stringify(updatedToken));
             return updatedToken;
         case "SET_USERNAME":
             const updatedUsername = { ...state, username: action.payload };
-            localStorage.setItem("authData", JSON.stringify(updatedUsername));
+            localStorage.setItem("userData", JSON.stringify(updatedUsername));
             return updatedUsername;
         case "LOGOUT":
-            localStorage.removeItem("authData");
+            localStorage.removeItem("userData");
             return { token: null, username: null, initialStateLoaded: true };
         default:
             return state;
     }
 };
 
-const AuthContext = createContext<{
-    state: AuthState;
-    dispatch: React.Dispatch<AuthAction>;
+const UserContext = createContext<{
+    state: UserState;
+    dispatch: React.Dispatch<UserAction>;
 } | undefined>(undefined);
 
-export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-    const [state, dispatch] = useReducer(authReducer, initialState);
+export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+    const [state, dispatch] = useReducer(userReducer, initialState);
 
     useEffect(() => {
-        const authData = localStorage.getItem("authData");
+        const userData = localStorage.getItem("userData");
         dispatch({ type: "INITIALIZE" });
-        if (authData) {
+        if (userData) {
             try {
-                const parsed = JSON.parse(authData);
+                const parsed = JSON.parse(userData);
                 if (parsed.token && parsed.username) {
                     dispatch({ type: "LOGIN", payload: parsed });
                 }
             } catch (e) {
-                console.error("Failed to parse authData:", e);
+                console.error("Failed to parse userData:", e);
             }
         }
     }, []);
 
-    return <AuthContext.Provider value={{ state, dispatch }}> {children} </AuthContext.Provider>
+    return <UserContext.Provider value={{ state, dispatch }}> {children} </UserContext.Provider>
 };
 
-export const useAuth = () => {
-    const context = useContext(AuthContext);
-    if (!context) throw new Error("useAuth must be used within AuthProvider");
+export const useUser = () => {
+    const context = useContext(UserContext);
+    if (!context) throw new Error("useUser must be used within UserProvider");
     return context;
 };
