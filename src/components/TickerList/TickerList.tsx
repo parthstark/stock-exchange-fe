@@ -1,9 +1,26 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useMarketData } from "../../context/MarketDataContext";
+import { useApi } from "../../hooks/useApi";
 
 const TickerList: React.FC = () => {
     const navigate = useNavigate();
+
+    const { request } = useApi();
+    const { dispatch } = useMarketData();
+
+    useEffect(() => {
+        const fetchTickers = async () => {
+            try {
+                const response = await request("/v1/market/tickers");
+                dispatch({ type: "SET_TICKERS", payload: response?.tickers });
+            } catch (err: any) {
+                dispatch({ type: "SET_TICKERS", payload: [] });
+            }
+        };
+
+        fetchTickers();
+    }, []);
 
     const { state: { tickers, tickersLoaded } } = useMarketData()
 

@@ -35,7 +35,7 @@ export const demoResponseData = {
         },
         {
             "action": "create",
-            "orderId": "f3ec8d1d-ebaa-477c-8cad-9d4f264494a0",
+            "orderId": "a3ec8d1d-ebaa-477c-8cad-9d4f264494a0",
             "side": "sell",
             "quantity": 44,
             "ticker": "IDFC",
@@ -45,7 +45,7 @@ export const demoResponseData = {
         },
         {
             "action": "create",
-            "orderId": "f3ec8d1d-ebaa-477c-8cad-9d4f264494a0",
+            "orderId": "b3ec8d1d-ebaa-477c-8cad-9d4f264494a0",
             "side": "buy",
             "quantity": 9,
             "ticker": "INFY",

@@ -1,5 +1,4 @@
-import React, { createContext, useReducer, useContext, useEffect } from "react";
-import { useApi } from "../hooks/useApi";
+import React, { createContext, useReducer, useContext } from "react";
 
 // type Ticker = {
 //     name: string;
@@ -35,20 +34,6 @@ const marketReducer = (state: MarketState, action: MarketAction): MarketState =>
 
 export const MarketDataProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const [state, dispatch] = useReducer(marketReducer, initialState);
-    const { request } = useApi();
-
-    useEffect(() => {
-        const fetchTickers = async () => {
-            try {
-                const response = await request("/v1/market/tickers");
-                dispatch({ type: "SET_TICKERS", payload: response?.tickers });
-            } catch (err: any) {
-                dispatch({ type: "SET_TICKERS", payload: [] });
-            }
-        };
-
-        fetchTickers();
-    }, []);
 
     return (
         <MarketDataContext.Provider value={{ state, dispatch }}>
