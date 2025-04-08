@@ -1,13 +1,18 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import { useMarketData } from "../../context/MarketDataContext";
 
 const TickerList: React.FC = () => {
     const navigate = useNavigate();
 
+    const { state: { tickers, tickersLoaded } } = useMarketData()
+
+    if (!tickersLoaded) return <div className="flex w-2/3 items-center justify-center text-gray-700 font-light text-lg">loading...</div>
+
     return (
         <div className="space-y-4 w-full md:w-2/3 p-6">
             <h2 className="text-xl font-bold">MARKETS</h2>
-            {["TATA", "RELIANCE", "INFY", "ICICI", "TATA", "RELIANCE", "INFY", "ICICI", "TATA", "RELIANCE", "INFY", "ICICI", "TATA", "RELIANCE", "INFY", "ICICI"].map((stock) => (
+            {tickers.map((stock) => (
                 <div onClick={() => navigate(`/market/${stock}`)} className="cursor-pointer" key={stock}>
                     <div className="flex items-center justify-between">
                         <span className="text-lg">{stock}</span>
