@@ -2,10 +2,11 @@ import React, { createContext, useReducer, useContext, useEffect } from "react";
 import { Order } from "../types/orderTypes";
 
 type UserState = {
+    initialStateLoaded: boolean;
     token: string | null;
     username: string | null;
-    initialStateLoaded: boolean;
     openOrders: Order[];
+    refreshOpenOrders: boolean;
 };
 
 type UserAction =
@@ -14,13 +15,16 @@ type UserAction =
     | { type: "LOGOUT" }
     | { type: "SET_TOKEN"; payload: string }
     | { type: "SET_USERNAME"; payload: string }
-    | { type: "SET_OPEN_ORDERS"; payload: Order[] };
+    | { type: "SET_OPEN_ORDERS"; payload: Order[] }
+    | { type: "TRIGGER_REFRESH_OPEN_ORDERS" }
+    | { type: "SAVE_REFRESH_OPEN_ORDERS" };
 
 const initialState: UserState = {
+    initialStateLoaded: false,
     token: null,
     username: null,
     openOrders: [],
-    initialStateLoaded: false,
+    refreshOpenOrders: false
 };
 
 const userReducer = (state: UserState, action: UserAction): UserState => {
@@ -29,10 +33,11 @@ const userReducer = (state: UserState, action: UserAction): UserState => {
             return { ...state, initialStateLoaded: true };
         case "LOGIN":
             const loginData = {
+                initialStateLoaded: true,
                 token: action.payload.token,
                 username: action.payload.username,
                 openOrders: [],
-                initialStateLoaded: true,
+                refreshOpenOrders: false
             };
             localStorage.setItem("userData", JSON.stringify({
                 token: loginData.token,
@@ -55,7 +60,17 @@ const userReducer = (state: UserState, action: UserAction): UserState => {
             return { ...state, openOrders: action.payload };
         case "LOGOUT":
             localStorage.removeItem("userData");
-            return { token: null, username: null, openOrders: [], initialStateLoaded: true };
+            return {
+                initialStateLoaded: true,
+                token: null,
+                username: null,
+                openOrders: [],
+                refreshOpenOrders: false
+            };
+        case "TRIGGER_REFRESH_OPEN_ORDERS":
+            return { ...state, refreshOpenOrders: true };
+        case "SAVE_REFRESH_OPEN_ORDERS":
+            return { ...state, refreshOpenOrders: false };
         default:
             return state;
     }

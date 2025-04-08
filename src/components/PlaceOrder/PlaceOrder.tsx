@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import { OrderSide } from "../../types/orderTypes";
 import { useApi } from "../../hooks/useApi";
 import OpenOrders from "../OpenOrders";
+import { useUser } from "../../context/UserContext";
 
 interface Props {
     ticker: string;
@@ -13,6 +14,7 @@ const PlaceOrder = ({ ticker }: Props) => {
     const [quantity, setQuantity] = useState<number>(0);
 
     const { request, loading, error } = useApi();
+    const { dispatch } = useUser()
 
     const handlePlaceOrder = async () => {
         const response = await request("/v1/order", "POST", {
@@ -21,6 +23,7 @@ const PlaceOrder = ({ ticker }: Props) => {
             ticker: ticker,
             limitPrice: price
         });
+        dispatch({ type: "TRIGGER_REFRESH_OPEN_ORDERS" });
         console.log(response);
     };
 
@@ -116,7 +119,7 @@ const PlaceOrder = ({ ticker }: Props) => {
             {/* Error message */}
             {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
 
-            <OpenOrders />
+            <OpenOrders filter={ticker} />
         </div>
     );
 };
