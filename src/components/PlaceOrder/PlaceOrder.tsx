@@ -1,25 +1,32 @@
 import { useMemo, useState } from "react";
+import { OrderSide } from "../../types/orderTypes";
+import { useApi } from "../../hooks/useApi";
+import OpenOrders from "../OpenOrders";
 
 interface Props {
-    market?: string;
+    ticker: string;
 }
 
-const PlaceOrder = ({ market }: Props) => {
-    const [orderType, setOrderType] = useState<"BUY" | "SELL">("BUY");
+const PlaceOrder = ({ ticker }: Props) => {
+    const [orderType, setOrderType] = useState<OrderSide>('buy');
     const [price, setPrice] = useState<number>(0);
     const [quantity, setQuantity] = useState<number>(0);
 
+    const { request, loading, error } = useApi();
 
-    // Dummy values – replace with actual user data later
-    const userBalance = 10000;
-    const userHolding = 25;
+    const handlePlaceOrder = async () => {
+        const response = await request("/v1/order", "POST", {
+            side: orderType,
+            quantity: quantity,
+            ticker: ticker,
+            limitPrice: price
+        });
+        console.log(response);
+    };
+
     const total = useMemo(() => {
         return price * quantity;
     }, [price, quantity]);
-
-    const handleOrder = () => {
-        alert(`${orderType} order placed for ${quantity} units of ${market} at ₹${price}`);
-    };
 
     return (
         <div className="space-y-4 p-4">
@@ -28,8 +35,8 @@ const PlaceOrder = ({ market }: Props) => {
             {/* BUY / SELL Tabs */}
             <div className="flex overflow-hidden rounded-md">
                 <button
-                    onClick={() => setOrderType("BUY")}
-                    className={`w-1/2 py-2 text-center font-semibold ${orderType === "BUY"
+                    onClick={() => setOrderType('buy')}
+                    className={`w-1/2 py-2 text-center font-semibold ${orderType === "buy"
                         ? "bg-green-500 text-white"
                         : "bg-gray-100 text-gray-700 hover:text-green-600"
                         }`}
@@ -37,8 +44,8 @@ const PlaceOrder = ({ market }: Props) => {
                     BUY
                 </button>
                 <button
-                    onClick={() => setOrderType("SELL")}
-                    className={`w-1/2 py-2 text-center font-semibold ${orderType === "SELL"
+                    onClick={() => setOrderType('sell')}
+                    className={`w-1/2 py-2 text-center font-semibold ${orderType === "sell"
                         ? "bg-red-500 text-white"
                         : "bg-gray-100 text-gray-700 hover:text-red-600"
                         }`}
@@ -54,12 +61,12 @@ const PlaceOrder = ({ market }: Props) => {
                 </label>
                 <input
                     type="number"
-                    value={price}
+                    value={price > 0 ? price : ''}
                     onChange={(e) => setPrice(parseFloat(e.target.value))}
                     className="w-full p-3 border border-gray-300 rounded-md"
                 />
                 <p className="text-xs text-gray-500 mt-1">
-                    Balance: ₹{userBalance.toLocaleString()}
+                    Balance: ₹{(100000).toLocaleString()}
                 </p>
             </div>
 
@@ -70,12 +77,12 @@ const PlaceOrder = ({ market }: Props) => {
                 </label>
                 <input
                     type="number"
-                    value={quantity}
+                    value={quantity > 0 ? quantity : ''}
                     onChange={(e) => setQuantity(parseInt(e.target.value))}
                     className="w-full p-3 border border-gray-300 rounded-md"
                 />
                 <p className="text-xs text-gray-500 mt-1">
-                    Holdings: {userHolding} units
+                    Holdings: {(25)} units
                 </p>
             </div>
 
@@ -94,14 +101,22 @@ const PlaceOrder = ({ market }: Props) => {
 
             {/* Place Order Button */}
             <button
-                onClick={handleOrder}
-                className={`w-full py-3 font-semibold rounded-md transition ${orderType === "BUY"
-                    ? "bg-green-500 text-white hover:bg-green-300"
-                    : "bg-red-500 text-white hover:bg-red-300"
-                    }`}
+                onClick={handlePlaceOrder}
+                className={`w-full py-3 font-semibold rounded-md transition 
+                    ${orderType === "buy"
+                        ? "bg-green-500 text-white hover:bg-green-300"
+                        : "bg-red-500 text-white hover:bg-red-300"}
+                    ${loading ? "cursor-not-allowed" : ""}
+                    `}
+                disabled={loading}
             >
-                Place order
+                {!loading ? 'Place order' : 'Placing order...'}
             </button>
+
+            {/* Error message */}
+            {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
+
+            <OpenOrders />
         </div>
     );
 };

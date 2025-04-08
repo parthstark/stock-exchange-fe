@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useDemoMode } from "../context/DemoModeContext";
 import { useUser } from "../context/UserContext";
 import { demoResponseData } from "../constants/constants";
@@ -22,6 +22,15 @@ export function useApi(): UseApiResponse {
 
     const { demoMode } = useDemoMode();
     const { state: { token } } = useUser();
+
+    useEffect(() => {
+        if (error) {
+            const timer = setTimeout(() => {
+                setError(null);
+            }, 2000);
+            return () => clearTimeout(timer);
+        }
+    }, [error]);
 
     const request = async (url: string, method: Method = "GET", body?: any) => {
         if (demoMode) return demoResponseData;

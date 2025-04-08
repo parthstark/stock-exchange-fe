@@ -32,7 +32,7 @@ function App() {
       />
 
       <Route
-        path="/market/:name"
+        path="/market/:ticker"
         element={
           <ProtectedLayout>
             <Market />
