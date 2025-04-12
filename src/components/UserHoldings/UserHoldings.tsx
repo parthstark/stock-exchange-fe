@@ -1,7 +1,9 @@
 import React from "react";
 import OpenOrders from "../OpenOrders";
 
-const UserActions: React.FC = () => {
+const UserHoldings: React.FC = () => {
+    // const r2 = await request("/v1/user/holdings");
+
     return (
         <div className="space-y-12 w-full md:w-1/3 p-6">
             <div className="space-y-4">
@@ -38,4 +40,4 @@ const UserActions: React.FC = () => {
     );
 };
 
-export default UserActions;
+export default UserHoldings;
