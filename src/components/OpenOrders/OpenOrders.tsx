@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { useApi } from "../../hooks/useApi";
 import { useUser } from "../../context/UserContext";
+import { Order } from "../../types/orderTypes";
 
 interface OpenOrdersProps {
     filter?: string;
@@ -26,10 +27,12 @@ const OpenOrders: React.FC<OpenOrdersProps> = ({ filter }) => {
         dispatch({ type: "SET_OPEN_ORDERS", payload: response?.openOrders });
     };
 
-    const handleCancelOrder = async (orderId: string) => {
-        alert(orderId)
-        // const response = await request(`/v1/order/${orderId}`, "DELETE");
-        // fetchOrders();
+    const handleCancelOrder = async (order: Order) => {
+        await request(`/v1/order/${order.orderId}`, "DELETE", {
+            side: order.side,
+            ticker: order.ticker
+        });
+        fetchOrders();
     };
 
     const filteredOpenOrders = openOrders.filter(order =>
@@ -74,7 +77,7 @@ const OpenOrders: React.FC<OpenOrdersProps> = ({ filter }) => {
                     </div>
                     <div className="w-1/3 text-right text-md text-gray-500 flex items-center justify-end gap-2">
                         {order.limitPrice}
-                        <button onClick={() => handleCancelOrder(order.orderId)} className="rounded-md h-7 w-7 shadow text-lg mx-2 px-0.5 hover:scale-110 transition">
+                        <button onClick={() => handleCancelOrder(order)} className="rounded-md h-7 w-7 shadow text-lg mx-2 px-0.5 hover:scale-110 transition">
                             ❌
                         </button>
                     </div>

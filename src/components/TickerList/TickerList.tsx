@@ -7,7 +7,7 @@ const TickerList: React.FC = () => {
     const navigate = useNavigate();
 
     const { request } = useApi();
-    const { dispatch } = useMarketData();
+    const { state: { tickers, tickersLoaded }, dispatch } = useMarketData();
 
     useEffect(() => {
         const fetchTickers = async () => {
@@ -22,7 +22,6 @@ const TickerList: React.FC = () => {
         fetchTickers();
     }, []);
 
-    const { state: { tickers, tickersLoaded } } = useMarketData()
 
     if (!tickersLoaded) return <div className="flex w-2/3 items-center justify-center text-gray-700 font-light text-lg">loading...</div>
 
