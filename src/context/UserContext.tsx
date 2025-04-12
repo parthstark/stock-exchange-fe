@@ -57,7 +57,10 @@ const userReducer = (state: UserState, action: UserAction): UserState => {
             }));
             return { ...state, username: action.payload };
         case "SET_OPEN_ORDERS":
-            return { ...state, openOrders: action.payload };
+            const sortedOpenOrders = action.payload.sort((a: Order, b: Order) => {
+                return a.timestamp - b.timestamp;
+            })
+            return { ...state, openOrders: sortedOpenOrders };
         case "LOGOUT":
             localStorage.removeItem("userData");
             return {

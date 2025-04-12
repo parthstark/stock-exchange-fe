@@ -1,27 +1,59 @@
-interface Order {
+import { useEffect, useState } from "react";
+import { useApi } from "../../hooks/useApi";
+
+type PricePoint = {
     price: number;
     volume: number;
 }
 
-interface Props {
-    asks: Order[];
-    bids: Order[];
+type Depth = {
+    asks: PricePoint[];
+    bids: PricePoint[];
 }
 
-const OrderBook = ({ asks, bids }: Props) => {
+interface OrderBookProps {
+    ticker: string;
+}
+
+const OrderBook: React.FC<OrderBookProps> = ({ ticker }) => {
+    const { request, loading, error } = useApi();
+
+    const [depth, setDepth] = useState<Depth>({
+        asks: [],
+        bids: []
+    })
+
+    useEffect(() => {
+        fetchDepth()
+    }, [])
+
+    const fetchDepth = async () => {
+        const { asks, bids } = await request(`/v1/market/depth/${ticker}`);
+        setDepth({
+            asks: asks ?? [],
+            bids: bids ?? []
+        })
+    };
+
+    if (loading || error) {
+        return null
+    }
+
     const maxAskVolume = Math.max(
-        ...asks.map((a) => a.volume)
+        ...depth.asks.map((a) => a.volume)
     );
     const maxBidVolume = Math.max(
-        ...bids.map((b) => b.volume)
+        ...depth.bids.map((b) => b.volume)
     );
 
-    const totalBidVolume = bids.reduce((acc, cur) => acc + cur.volume, 0);
-    const totalAskVolume = asks.reduce((acc, cur) => acc + cur.volume, 0);
+    const totalBidVolume = depth.bids.reduce((acc, cur) => acc + cur.volume, 0);
+    const totalAskVolume = depth.asks.reduce((acc, cur) => acc + cur.volume, 0);
     const totalVolume = totalBidVolume + totalAskVolume;
 
-    const bidPercentage = ((totalBidVolume / totalVolume) * 100).toFixed(0);
-    const askPercentage = ((totalAskVolume / totalVolume) * 100).toFixed(0);
+    const bidPercentage = (totalBidVolume / totalVolume) * 100
+    const askPercentage = (totalAskVolume / totalVolume) * 100
+    const bidPercentageText = isNaN(bidPercentage) ? 50 : bidPercentage.toFixed(0)
+    const askPercentageText = isNaN(askPercentage) ? 50 : askPercentage.toFixed(0)
 
     return (
         <div className="p-4 space-y-2 text-sm text-gray-800">
@@ -37,8 +69,8 @@ const OrderBook = ({ asks, bids }: Props) => {
             <div className="h-px bg-gray-200" />
 
             {/* Asks */}
-            {asks.slice(-10).map((ask, i) => {
-                const width = (ask.volume / maxAskVolume) * 150;
+            {depth.asks.slice(-10).map((ask, i) => {
+                const width = (ask.volume / maxAskVolume) * 100;
                 return (
                     <div
                         key={`ask-${i}`}
@@ -58,8 +90,8 @@ const OrderBook = ({ asks, bids }: Props) => {
             <div className="text-center font-semibold text-green-600 py-1 text-sm">77,900.6</div>
 
             {/* Bids */}
-            {bids.slice(0, 10).map((bid, i) => {
-                const width = (bid.volume / maxBidVolume) * 150;
+            {depth.bids.slice(0, 10).map((bid, i) => {
+                const width = (bid.volume / maxBidVolume) * 100;
                 return (
                     <div
                         key={`bid-${i}`}
@@ -81,16 +113,16 @@ const OrderBook = ({ asks, bids }: Props) => {
             <div className="flex items-center w-full h-6">
                 <div
                     className="bg-green-100 text-green-600 text-xs font-medium h-full flex items-center justify-start px-2"
-                    style={{ width: `${bidPercentage}%` }}
+                    style={{ width: `${bidPercentageText}%` }}
                 >
-                    {bidPercentage}%
+                    {bidPercentageText}%
                 </div>
 
                 <div
                     className="bg-red-100 text-red-500 text-xs font-medium h-full flex items-center justify-end px-2"
-                    style={{ width: `${askPercentage}%` }}
+                    style={{ width: `${askPercentageText}%` }}
                 >
-                    {askPercentage}%
+                    {askPercentageText}%
                 </div>
             </div>
         </div>

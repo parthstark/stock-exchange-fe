@@ -8,6 +8,7 @@ export interface Order {
     ticker: string;
     quantity: number;
     limitPrice: number;
+    timestamp: number;
 }
 
 // export interface FilledOrder {
