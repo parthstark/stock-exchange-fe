@@ -35,9 +35,7 @@ const OrderBook: React.FC<OrderBookProps> = ({ ticker }) => {
         })
     };
 
-    if (loading || error) {
-        return null
-    }
+    if (error) return null
 
     const maxAskVolume = Math.max(
         ...depth.asks.map((a) => a.volume)
@@ -69,7 +67,17 @@ const OrderBook: React.FC<OrderBookProps> = ({ ticker }) => {
             <div className="h-px bg-gray-200" />
 
             {/* Asks */}
-            {depth.asks.slice(-10).map((ask, i) => {
+            {loading && <div>
+                {[...Array(10)].map((_, idx) => (
+                    <div
+                        key={idx}
+                        className="p-1 my-2 h-4 bg-red-50 animate-pulse"
+                        style={{ width: `${idx * 10}%` }}
+                    />
+                ))}
+            </div>
+            }
+            {!loading && depth.asks.slice(-10).map((ask, i) => {
                 const width = (ask.volume / maxAskVolume) * 100;
                 return (
                     <div
@@ -86,11 +94,21 @@ const OrderBook: React.FC<OrderBookProps> = ({ ticker }) => {
                 );
             })}
 
-            {/* Mid Price */}
-            <div className="text-center font-semibold text-green-600 py-1 text-sm">77,900.6</div>
+            {/* Mid Price
+            <div className="text-center font-semibold text-green-600 py-1 text-sm">77,900.6</div> */}
 
             {/* Bids */}
-            {depth.bids.slice(0, 10).map((bid, i) => {
+            {loading && <div>
+                {[...Array(10)].map((_, idx) => (
+                    <div
+                        key={idx}
+                        className="p-1 my-2 h-4 bg-green-50 animate-pulse"
+                        style={{ width: `${(9 - idx) * 10}%` }}
+                    />
+                ))}
+            </div>
+            }
+            {!loading && depth.bids.slice(0, 10).map((bid, i) => {
                 const width = (bid.volume / maxBidVolume) * 100;
                 return (
                     <div
