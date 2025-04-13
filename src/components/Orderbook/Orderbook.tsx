@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useApi } from "../../hooks/useApi";
+import wsManager from "../../utils/WebSocketManager";
 
 type PricePoint = {
     price: number;
@@ -25,6 +26,17 @@ const OrderBook: React.FC<OrderBookProps> = ({ ticker }) => {
 
     useEffect(() => {
         fetchDepth()
+
+        const handler = (data: any) => {
+            const { updatedAsks, updatedBids } = data;
+            setDepth(prev => ({
+                asks: mergeUpdates(prev.asks, updatedAsks, "desc"),
+                bids: mergeUpdates(prev.bids, updatedBids, "desc")
+            }));
+        };
+
+        wsManager.subscribe(ticker, "depth", handler);
+        return () => wsManager.unsubscribe(ticker, "depth", handler);
     }, [])
 
     const fetchDepth = async () => {
@@ -148,3 +160,25 @@ const OrderBook: React.FC<OrderBookProps> = ({ ticker }) => {
 };
 
 export default OrderBook;
+
+export const mergeUpdates = (
+    existing: PricePoint[],
+    updates: PricePoint[],
+    sortOrder: "asc" | "desc"
+): PricePoint[] => {
+    const updatedMap = new Map(existing.map(p => [p.price, p]));
+
+    for (const update of updates) {
+        if (update.volume === 0) {
+            updatedMap.delete(update.price);
+        } else {
+            updatedMap.set(update.price, update);
+        }
+    }
+
+    const updatedArray = Array.from(updatedMap.values());
+
+    return updatedArray.sort((a, b) =>
+        sortOrder === "asc" ? a.price - b.price : b.price - a.price
+    );
+};
