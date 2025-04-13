@@ -14,17 +14,19 @@ const PlaceOrder = ({ ticker }: Props) => {
     const [quantity, setQuantity] = useState<number>(0);
 
     const { request, loading, error } = useApi();
-    const { dispatch } = useUser()
+    const { state: { userHoldings }, dispatch } = useUser()
+    const cashHolding = userHoldings.get('cash')
+    const stockHolding = userHoldings.get(ticker)
 
     const handlePlaceOrder = async () => {
-        const response = await request("/v1/order", "POST", {
+        await request("/v1/order", "POST", {
             side: orderType,
             quantity: quantity,
             ticker: ticker,
             limitPrice: price
         });
         dispatch({ type: "TRIGGER_REFRESH_OPEN_ORDERS" });
-        console.log(response);
+        dispatch({ type: "TRIGGER_REFRESH_USER_HOLDINGS" });
     };
 
     const total = useMemo(() => {
@@ -69,7 +71,7 @@ const PlaceOrder = ({ ticker }: Props) => {
                     className="w-full p-3 border border-gray-300 rounded-md"
                 />
                 <p className="text-xs text-gray-500 mt-1">
-                    Balance: ₹{(100000).toLocaleString()}
+                    Balance: ₹{(cashHolding?.available ?? 0).toLocaleString()}
                 </p>
             </div>
 
@@ -85,7 +87,7 @@ const PlaceOrder = ({ ticker }: Props) => {
                     className="w-full p-3 border border-gray-300 rounded-md"
                 />
                 <p className="text-xs text-gray-500 mt-1">
-                    Holdings: {(25)} units
+                    Holdings: {(stockHolding?.available ?? 0)} units
                 </p>
             </div>
 

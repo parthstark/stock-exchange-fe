@@ -32,7 +32,8 @@ const OpenOrders: React.FC<OpenOrdersProps> = ({ filter }) => {
             side: order.side,
             ticker: order.ticker
         });
-        fetchOrders();
+        dispatch({ type: "TRIGGER_REFRESH_OPEN_ORDERS" });
+        dispatch({ type: "TRIGGER_REFRESH_USER_HOLDINGS" });
     };
 
     const filteredOpenOrders = openOrders.filter(order =>

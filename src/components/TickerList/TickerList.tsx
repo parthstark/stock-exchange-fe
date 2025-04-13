@@ -23,7 +23,19 @@ const TickerList: React.FC = () => {
     }, []);
 
 
-    if (!tickersLoaded) return <div className="flex w-2/3 items-center justify-center text-gray-700 font-light text-lg">loading...</div>
+    if (!tickersLoaded) return (
+        <div className="space-y-4 w-full md:w-2/3 p-6">
+            <h2 className="text-xl font-bold">MARKETS</h2>
+            {[...Array(12)].map((_, idx) => (
+                <div key={idx}>
+                    <div className="h-9 bg-gray-100 animate-pulse">
+                    </div>
+                    {/* Divider */}
+                    <div className="h-px bg-gray-200" />
+                </div>
+            ))}
+        </div>
+    );
 
     return (
         <div className="space-y-4 w-full md:w-2/3 p-6">

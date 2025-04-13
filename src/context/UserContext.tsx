@@ -1,11 +1,14 @@
 import React, { createContext, useReducer, useContext, useEffect } from "react";
 import { Order } from "../types/orderTypes";
+import { UserHoldings } from "../types/userTypes";
 
 type UserState = {
     initialStateLoaded: boolean;
     token: string | null;
     username: string | null;
     openOrders: Order[];
+    userHoldings: UserHoldings,
+    refreshUserHoldings: boolean,
     refreshOpenOrders: boolean;
 };
 
@@ -17,14 +20,19 @@ type UserAction =
     | { type: "SET_USERNAME"; payload: string }
     | { type: "SET_OPEN_ORDERS"; payload: Order[] }
     | { type: "TRIGGER_REFRESH_OPEN_ORDERS" }
-    | { type: "SAVE_REFRESH_OPEN_ORDERS" };
+    | { type: "SAVE_REFRESH_OPEN_ORDERS" }
+    | { type: "SET_USER_HOLDINGS"; payload: UserHoldings }
+    | { type: "TRIGGER_REFRESH_USER_HOLDINGS" }
+    | { type: "SAVE_REFRESH_USER_HOLDINGS" }
 
 const initialState: UserState = {
     initialStateLoaded: false,
     token: null,
     username: null,
     openOrders: [],
-    refreshOpenOrders: false
+    userHoldings: new Map() as UserHoldings,
+    refreshOpenOrders: false,
+    refreshUserHoldings: false,
 };
 
 const userReducer = (state: UserState, action: UserAction): UserState => {
@@ -37,7 +45,9 @@ const userReducer = (state: UserState, action: UserAction): UserState => {
                 token: action.payload.token,
                 username: action.payload.username,
                 openOrders: [],
-                refreshOpenOrders: false
+                refreshOpenOrders: false,
+                userHoldings: new Map() as UserHoldings,
+                refreshUserHoldings: false,
             };
             localStorage.setItem("userData", JSON.stringify({
                 token: loginData.token,
@@ -61,6 +71,9 @@ const userReducer = (state: UserState, action: UserAction): UserState => {
                 return a.timestamp - b.timestamp;
             })
             return { ...state, openOrders: sortedOpenOrders };
+        case "SET_USER_HOLDINGS":
+            const userHoldings: UserHoldings = new Map(Object.entries(action.payload));
+            return { ...state, userHoldings: userHoldings };
         case "LOGOUT":
             localStorage.removeItem("userData");
             return {
@@ -68,12 +81,18 @@ const userReducer = (state: UserState, action: UserAction): UserState => {
                 token: null,
                 username: null,
                 openOrders: [],
-                refreshOpenOrders: false
+                refreshOpenOrders: false,
+                userHoldings: new Map() as UserHoldings,
+                refreshUserHoldings: false,
             };
         case "TRIGGER_REFRESH_OPEN_ORDERS":
             return { ...state, refreshOpenOrders: true };
         case "SAVE_REFRESH_OPEN_ORDERS":
             return { ...state, refreshOpenOrders: false };
+        case "TRIGGER_REFRESH_USER_HOLDINGS":
+            return { ...state, refreshUserHoldings: true };
+        case "SAVE_REFRESH_USER_HOLDINGS":
+            return { ...state, refreshUserHoldings: false };
         default:
             return state;
     }
