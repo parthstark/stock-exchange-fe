@@ -41,10 +41,10 @@ const TickerList: React.FC = () => {
         <div className="space-y-4 w-full md:w-2/3 p-6">
             <h2 className="text-xl font-bold">MARKETS</h2>
             {tickers.map((stock) => (
-                <div onClick={() => navigate(`/market/${stock}`)} className="cursor-pointer" key={stock}>
+                <div onClick={() => navigate(`/market/${stock.ticker}`)} className="cursor-pointer" key={stock.ticker}>
                     <div className="flex items-center justify-between">
-                        <span className="text-lg">{stock}</span>
-                        <span className="text-green-600 text-xl">↑</span>
+                        <span className="text-lg">{stock.ticker}</span>
+                        <span className="text-green-600 text-xl">{stock.price}</span>
                     </div>
                     {/* Divider */}
                     <div className="h-px bg-gray-200 mt-2" />

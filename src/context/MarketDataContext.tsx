@@ -1,17 +1,17 @@
 import React, { createContext, useReducer, useContext } from "react";
 
-// type Ticker = {
-//     name: string;
-//     price: number;
-// };
+type Ticker = {
+    ticker: string;
+    price: number;
+};
 
 type MarketState = {
-    tickers: string[];
+    tickers: Ticker[];
     tickersLoaded: boolean;
 };
 
 type MarketAction =
-    | { type: "SET_TICKERS"; payload: string[] };
+    | { type: "SET_TICKERS"; payload: Ticker[] };
 
 const initialState: MarketState = {
     tickers: [],

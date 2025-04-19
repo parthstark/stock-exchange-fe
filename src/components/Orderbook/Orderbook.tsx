@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useApi } from "../../hooks/useApi";
 import wsManager from "../../utils/WebSocketManager";
 import { useDemoMode } from "../../context/DemoModeContext";
+import { useMarketData } from "../../context/MarketDataContext";
 
 type PricePoint = {
     price: number;
@@ -20,6 +21,7 @@ interface OrderBookProps {
 const OrderBook: React.FC<OrderBookProps> = ({ ticker }) => {
     const { request, loading, error } = useApi();
     const { demoMode } = useDemoMode()
+    const { state: { tickers } } = useMarketData()
 
     const [depth, setDepth] = useState<Depth>({
         asks: [],
@@ -27,10 +29,10 @@ const OrderBook: React.FC<OrderBookProps> = ({ ticker }) => {
     })
     const [ltp, setLtp] = useState<{
         value: number,
-        color: 'red' | 'green'
+        colorClassName: 'text-red-600' | 'text-green-600'
     }>({
-        value: 0,
-        color: 'green'
+        value: tickers.find((entry) => entry.ticker === ticker)?.price ?? 0,
+        colorClassName: 'text-green-600'
     })
 
     useEffect(() => {
@@ -70,7 +72,7 @@ const OrderBook: React.FC<OrderBookProps> = ({ ticker }) => {
             if (prev?.value === lastTradedPrice) return prev
             return {
                 value: lastTradedPrice,
-                color: lastTradedPrice > (prev?.value ?? 0) ? 'green' : 'red'
+                colorClassName: lastTradedPrice > (prev?.value ?? 0) ? 'text-green-600' : 'text-red-600'
             }
         })
     }
@@ -102,7 +104,7 @@ const OrderBook: React.FC<OrderBookProps> = ({ ticker }) => {
             const price = basePrice + priceFluctuation;
             return {
                 value: parseFloat(price.toFixed(2)),
-                color: prev.value > price ? 'red' : 'green'
+                colorClassName: prev.value > price ? 'text-red-600' : 'text-green-600'
             }
         })
     }
@@ -167,8 +169,8 @@ const OrderBook: React.FC<OrderBookProps> = ({ ticker }) => {
             })}
 
             {/* Mid Price */}
-            <div className="text-center text-green-600 py-1 text-lg font-light"
-                style={{ color: ltp?.color }}>{ltp?.value}</div>
+            <div className={`text-center text-green-600 py-1 text-xl ${ltp.colorClassName ?? ''}`}>
+                {ltp?.value}</div>
 
             {/* Bids */}
             {loading && <div>
