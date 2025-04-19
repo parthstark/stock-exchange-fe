@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useApi } from "../../hooks/useApi";
 import wsManager from "../../utils/WebSocketManager";
+import { useDemoMode } from "../../context/DemoModeContext";
 
 type PricePoint = {
     price: number;
@@ -18,6 +19,7 @@ interface OrderBookProps {
 
 const OrderBook: React.FC<OrderBookProps> = ({ ticker }) => {
     const { request, loading, error } = useApi();
+    const { demoMode } = useDemoMode()
 
     const [depth, setDepth] = useState<Depth>({
         asks: [],
@@ -32,6 +34,10 @@ const OrderBook: React.FC<OrderBookProps> = ({ ticker }) => {
     })
 
     useEffect(() => {
+        if (demoMode) {
+            const interval = setInterval(mockOrderbookChanges, 500)
+            return () => clearInterval(interval)
+        }
         fetchDepth()
         wsManager.subscribe(ticker, "depth", depthUpdateshandler);
         wsManager.subscribe(ticker, "lastTradedPrice", ltpUpdateHandler);
@@ -65,6 +71,38 @@ const OrderBook: React.FC<OrderBookProps> = ({ ticker }) => {
             return {
                 value: lastTradedPrice,
                 color: lastTradedPrice > (prev?.value ?? 0) ? 'green' : 'red'
+            }
+        })
+    }
+
+    const mockOrderbookChanges = () => {
+        const basePrice = 100;
+        const randomDepthArray = (type: 'ask' | 'bid') => {
+            const arr = new Array(15).fill(0).map((_, idx) => {
+                const priceFluctuation = Math.random() * 5;
+                const price =
+                    type === 'ask'
+                        ? basePrice + idx + priceFluctuation
+                        : basePrice - idx - priceFluctuation;
+                return {
+                    price: parseFloat(price.toFixed(2)),
+                    volume: parseFloat((Math.random() * 100).toFixed(2)),
+                };
+            });
+            if (type === 'ask') return arr.reverse()
+            return arr
+        }
+
+        setDepth({
+            asks: randomDepthArray('ask'),
+            bids: randomDepthArray('bid'),
+        });
+        setLtp(prev => {
+            const priceFluctuation = Math.random() * 2;
+            const price = basePrice + priceFluctuation;
+            return {
+                value: parseFloat(price.toFixed(2)),
+                color: prev.value > price ? 'red' : 'green'
             }
         })
     }
@@ -129,7 +167,7 @@ const OrderBook: React.FC<OrderBookProps> = ({ ticker }) => {
             })}
 
             {/* Mid Price */}
-            <div className="text-center font-semibold text-green-600 py-1 text-sm"
+            <div className="text-center text-green-600 py-1 text-lg font-light"
                 style={{ color: ltp?.color }}>{ltp?.value}</div>
 
             {/* Bids */}
