@@ -51,7 +51,7 @@ const TradingChart: React.FC<TradingChartProps> = ({ ticker }) => {
         const newCandleInterval = setInterval(() => {
             const newCandle = generateNextCandle(candleSeries?.data() as CandlestickData[]);
             candleSeries?.update(newCandle);
-        }, 60 * 1000);
+        }, 3 * 1000);
 
         return () => clearInterval(newCandleInterval);
     }, [candleSeries])
