@@ -3,6 +3,7 @@ import { useApi } from "../../hooks/useApi";
 import wsManager from "../../utils/WebSocketManager";
 import { useDemoMode } from "../../context/DemoModeContext";
 import { useMarketData } from "../../context/MarketDataContext";
+import { randomDepthArray } from "../../utils/mockUtils";
 
 type PricePoint = {
     price: number;
@@ -79,25 +80,9 @@ const OrderBook: React.FC<OrderBookProps> = ({ ticker }) => {
 
     const mockOrderbookChanges = () => {
         const basePrice = tickers.find((entry) => entry.ticker === ticker)?.price ?? 100;
-        const randomDepthArray = (type: 'ask' | 'bid') => {
-            const arr = new Array(15).fill(0).map((_, idx) => {
-                const priceFluctuation = Math.random() * 5;
-                const price =
-                    type === 'ask'
-                        ? basePrice + idx + priceFluctuation
-                        : basePrice - idx - priceFluctuation;
-                return {
-                    price: parseFloat(price.toFixed(2)),
-                    volume: parseFloat((Math.random() * 100).toFixed(2)),
-                };
-            });
-            if (type === 'ask') return arr.reverse()
-            return arr
-        }
-
         setDepth({
-            asks: randomDepthArray('ask'),
-            bids: randomDepthArray('bid'),
+            asks: randomDepthArray(basePrice, 'ask'),
+            bids: randomDepthArray(basePrice, 'bid'),
         });
         setLtp(prev => {
             const priceFluctuation = Math.random() * 2;

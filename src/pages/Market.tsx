@@ -11,7 +11,7 @@ const Market = () => {
         <div className="font-sans">
             <div className="flex flex-col md:flex-row">
                 <div className="w-full md:w-1/2 my-2">
-                    <TradingChart />
+                    <TradingChart ticker={ticker!} />
                 </div>
 
                 {/* Divider*/}

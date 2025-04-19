@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
     createChart,
     CandlestickSeries,
@@ -6,11 +6,93 @@ import {
     type CandlestickData,
     type DeepPartial,
     type ChartOptions,
+    type CandlestickStyleOptions,
+    type ISeriesApi,
+    type UTCTimestamp,
 } from "lightweight-charts";
+import { useMarketData } from "../../context/MarketDataContext";
+import { useDemoMode } from "../../context/DemoModeContext";
+import { useApi } from "../../hooks/useApi";
+import { generateMockInitialCandles } from "../../utils/mockUtils";
 
-const TradingChart = () => {
+interface TradingChartProps {
+    ticker: string;
+}
+
+const TradingChart: React.FC<TradingChartProps> = ({ ticker }) => {
     const chartContainerRef = useRef<HTMLDivElement>(null);
     const chartRef = useRef<IChartApi | null>(null);
+    const [candleSeries, setCandleSeries] = useState<ISeriesApi<any> | null>(null);
+    const { state: { tickers } } = useMarketData()
+    const { demoMode } = useDemoMode()
+    const { request } = useApi();
+    const basePrice = tickers.find((entry) => entry.ticker === ticker)?.price ?? 0
+
+    useEffect(() => {
+        if (!chartContainerRef.current) return;
+        chartRef.current = createChart(chartContainerRef.current, {
+            ...chartOptions,
+        });
+        window.addEventListener("resize", handleResize);
+
+        const candleSeries = chartRef.current?.addSeries(CandlestickSeries, candlestickSeriesOptions)
+        setCandleSeries(candleSeries)
+
+        return () => {
+            window.removeEventListener("resize", handleResize);
+            chartRef.current?.remove();
+        };
+    }, []);
+
+    useEffect(() => {
+        if (!candleSeries) return;
+
+        setChartData();
+        const newCandleInterval = setInterval(() => {
+            const newCandle = generateNextCandle(candleSeries?.data() as CandlestickData[]);
+            candleSeries?.update(newCandle);
+        }, 60 * 1000);
+
+        return () => clearInterval(newCandleInterval);
+    }, [candleSeries])
+
+    // for demo mode only
+    useEffect(() => {
+        if (!demoMode) return
+        if (!candleSeries) return;
+
+        const currentCandleInterval = setInterval(() => {
+            const lastCandle = candleSeries?.data()[candleSeries.data().length - 1] as CandlestickData
+            const priceFluctuation = Math.random() * 2;
+            const newClose = parseFloat((basePrice + priceFluctuation).toFixed(2));
+
+            lastCandle.close = newClose;
+            lastCandle.high = Math.max(lastCandle.high, newClose);
+            lastCandle.low = Math.min(lastCandle.low, newClose);
+            candleSeries?.update({ ...lastCandle });
+        }, 500)
+
+        return () => clearInterval(currentCandleInterval);
+    }, [candleSeries, demoMode])
+
+    const setChartData = async () => {
+        const response = await request(`/v1/market/klines/${ticker}`);
+        let initialCandles = response?.klines
+        if (demoMode) initialCandles = generateMockInitialCandles(150, basePrice)
+        candleSeries?.setData(initialCandles);
+    }
+
+    const generateNextCandle = (candleSeriesData: CandlestickData[]): CandlestickData => {
+        const now = Math.floor(Date.now() / 1000) as UTCTimestamp
+        const lastCandle = candleSeriesData[candleSeriesData.length - 1]
+        return {
+            time: now,
+            open: lastCandle.close,
+            high: lastCandle.close,
+            low: lastCandle.close,
+            close: lastCandle.close,
+        };
+    };
 
     const handleResize = () => {
         if (chartContainerRef.current && chartRef.current) {
@@ -20,27 +102,6 @@ const TradingChart = () => {
             );
         }
     };
-
-    useEffect(() => {
-        if (!chartContainerRef.current) return;
-
-        chartRef.current = createChart(chartContainerRef.current, {
-            ...chartOptions,
-        });
-
-        const candleSeries = chartRef.current.addSeries(CandlestickSeries, {
-            upColor: "#4fff00",
-            downColor: "#ff0000",
-            borderUpColor: "#4fff00",
-            borderDownColor: "#ff0000",
-            wickUpColor: "#4fff00",
-            wickDownColor: "#ff0000",
-        })
-        candleSeries.setData(exampleData);
-
-        window.addEventListener("resize", handleResize);
-        return () => window.removeEventListener("resize", handleResize);
-    }, []);
 
     return (
         <div className="w-full h-full p-4">
@@ -74,25 +135,11 @@ const chartOptions: DeepPartial<ChartOptions> = {
     },
 };
 
-const exampleData: CandlestickData[] = [
-    { time: "2024-04-01", open: 100, high: 110, low: 90, close: 105 },
-    { time: "2024-04-02", open: 105, high: 115, low: 95, close: 108 },
-    { time: "2024-04-03", open: 108, high: 112, low: 102, close: 107 },
-    { time: "2024-04-04", open: 107, high: 109, low: 100, close: 103 },
-    { time: "2024-04-05", open: 103, high: 106, low: 101, close: 104 },
-    { time: "2024-04-06", open: 104, high: 110, low: 103, close: 109 },
-    { time: "2024-04-07", open: 109, high: 112, low: 105, close: 106 },
-    { time: "2024-04-08", open: 106, high: 108, low: 100, close: 101 },
-    { time: "2024-04-09", open: 101, high: 105, low: 98, close: 100 },
-    { time: "2024-04-10", open: 100, high: 102, low: 96, close: 98 },
-    { time: "2024-04-11", open: 98, high: 99, low: 92, close: 94 },
-    { time: "2024-04-12", open: 94, high: 97, low: 90, close: 92 },
-    { time: "2024-04-13", open: 92, high: 95, low: 89, close: 91 },
-    { time: "2024-04-14", open: 91, high: 96, low: 90, close: 95 },
-    { time: "2024-04-15", open: 95, high: 97, low: 94, close: 96 },
-    { time: "2024-04-16", open: 96, high: 100, low: 95, close: 99 },
-    { time: "2024-04-17", open: 99, high: 104, low: 97, close: 102 },
-    { time: "2024-04-18", open: 102, high: 106, low: 101, close: 104 },
-    { time: "2024-04-19", open: 104, high: 108, low: 102, close: 107 },
-    { time: "2024-04-20", open: 107, high: 110, low: 105, close: 108 },
-];
+const candlestickSeriesOptions: DeepPartial<CandlestickStyleOptions> = {
+    upColor: "#4fff00",
+    downColor: "#ff0000",
+    borderUpColor: "#4fff00",
+    borderDownColor: "#ff0000",
+    wickUpColor: "#4fff00",
+    wickDownColor: "#ff0000",
+}
