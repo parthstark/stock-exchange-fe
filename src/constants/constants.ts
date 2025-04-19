@@ -3,43 +3,43 @@ export const demoResponseData = {
     tickers: [
         {
             "ticker": "TATA",
-            "price": 0
+            "price": parseFloat((Math.random() * (10 * parseInt((Math.random() * 100).toFixed(1)))).toFixed(2)),
         },
         {
             "ticker": "INFY",
-            "price": 0
+            "price": parseFloat((Math.random() * (10 * parseInt((Math.random() * 100).toFixed(1)))).toFixed(2)),
         },
         {
             "ticker": "RELIANCE",
-            "price": 0
+            "price": parseFloat((Math.random() * (10 * parseInt((Math.random() * 100).toFixed(1)))).toFixed(2)),
         },
         {
             "ticker": "HDFC",
-            "price": 0
+            "price": parseFloat((Math.random() * (10 * parseInt((Math.random() * 100).toFixed(1)))).toFixed(2)),
         },
         {
             "ticker": "ICICI",
-            "price": 0
+            "price": parseFloat((Math.random() * (10 * parseInt((Math.random() * 100).toFixed(1)))).toFixed(2)),
         },
         {
             "ticker": "TCS",
-            "price": 0
+            "price": parseFloat((Math.random() * (10 * parseInt((Math.random() * 100).toFixed(1)))).toFixed(2)),
         },
         {
             "ticker": "LT",
-            "price": 0
+            "price": parseFloat((Math.random() * (10 * parseInt((Math.random() * 100).toFixed(1)))).toFixed(2)),
         },
         {
             "ticker": "HINDUNILVR",
-            "price": 0
+            "price": parseFloat((Math.random() * (10 * parseInt((Math.random() * 100).toFixed(1)))).toFixed(2)),
         },
         {
             "ticker": "KOTAKBANK",
-            "price": 0
+            "price": parseFloat((Math.random() * (10 * parseInt((Math.random() * 100).toFixed(1)))).toFixed(2)),
         },
         {
             "ticker": "AXISBANK",
-            "price": 0
+            "price": parseFloat((Math.random() * (10 * parseInt((Math.random() * 100).toFixed(1)))).toFixed(2)),
         }
     ]
 }

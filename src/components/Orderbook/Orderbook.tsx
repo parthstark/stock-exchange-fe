@@ -78,7 +78,7 @@ const OrderBook: React.FC<OrderBookProps> = ({ ticker }) => {
     }
 
     const mockOrderbookChanges = () => {
-        const basePrice = 100;
+        const basePrice = tickers.find((entry) => entry.ticker === ticker)?.price ?? 100;
         const randomDepthArray = (type: 'ask' | 'bid') => {
             const arr = new Array(15).fill(0).map((_, idx) => {
                 const priceFluctuation = Math.random() * 5;
