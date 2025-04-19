@@ -69,9 +69,9 @@ const userReducer = (state: UserState, action: UserAction): UserState => {
             }));
             return { ...state, username: action.payload };
         case "SET_OPEN_ORDERS":
-            const sortedOpenOrders = action.payload.sort((a: Order, b: Order) => {
+            const sortedOpenOrders = action.payload?.sort((a: Order, b: Order) => {
                 return a.timestamp - b.timestamp;
-            })
+            }) ?? []
             return { ...state, openOrders: sortedOpenOrders };
         case "SET_USER_HOLDINGS":
             const userHoldings: UserHoldings = action.payload ? new Map(Object.entries(action.payload)) : new Map();
