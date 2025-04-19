@@ -14,7 +14,7 @@ type UserState = {
 
 type UserAction =
     | { type: "INITIALIZE" }
-    | { type: "LOGIN"; payload: { token: string; username: string } }
+    | { type: "LOGIN"; payload: { token: string; username: string; demoMode?: boolean } }
     | { type: "LOGOUT" }
     | { type: "SET_TOKEN"; payload: string }
     | { type: "SET_USERNAME"; payload: string }
@@ -49,10 +49,12 @@ const userReducer = (state: UserState, action: UserAction): UserState => {
                 userHoldings: new Map() as UserHoldings,
                 refreshUserHoldings: false,
             };
-            localStorage.setItem("userData", JSON.stringify({
-                token: loginData.token,
-                username: loginData.username,
-            }));
+            if (!action.payload.demoMode) {
+                localStorage.setItem("userData", JSON.stringify({
+                    token: loginData.token,
+                    username: loginData.username,
+                }));
+            }
             return loginData;
         case "SET_TOKEN":
             localStorage.setItem("userData", JSON.stringify({
@@ -72,7 +74,7 @@ const userReducer = (state: UserState, action: UserAction): UserState => {
             })
             return { ...state, openOrders: sortedOpenOrders };
         case "SET_USER_HOLDINGS":
-            const userHoldings: UserHoldings = new Map(Object.entries(action.payload));
+            const userHoldings: UserHoldings = action.payload ? new Map(Object.entries(action.payload)) : new Map();
             return { ...state, userHoldings: userHoldings };
         case "LOGOUT":
             localStorage.removeItem("userData");

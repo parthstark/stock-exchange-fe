@@ -24,6 +24,7 @@ const Login = () => {
                 payload: {
                     token: response.token,
                     username,
+                    demoMode
                 },
             });
             navigate("/");
