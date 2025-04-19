@@ -23,20 +23,23 @@ const OrderBook: React.FC<OrderBookProps> = ({ ticker }) => {
         asks: [],
         bids: []
     })
+    const [ltp, setLtp] = useState<{
+        value: number,
+        color: 'red' | 'green'
+    }>({
+        value: 0,
+        color: 'green'
+    })
 
     useEffect(() => {
         fetchDepth()
+        wsManager.subscribe(ticker, "depth", depthUpdateshandler);
+        wsManager.subscribe(ticker, "lastTradedPrice", ltpUpdateHandler);
 
-        const handler = (data: any) => {
-            const { updatedAsks, updatedBids } = data;
-            setDepth(prev => ({
-                asks: mergeUpdates(prev.asks, updatedAsks, "desc"),
-                bids: mergeUpdates(prev.bids, updatedBids, "desc")
-            }));
+        return () => {
+            wsManager.unsubscribe(ticker, "depth", depthUpdateshandler)
+            wsManager.unsubscribe(ticker, "lastTradedPrice", ltpUpdateHandler)
         };
-
-        wsManager.subscribe(ticker, "depth", handler);
-        return () => wsManager.unsubscribe(ticker, "depth", handler);
     }, [])
 
     const fetchDepth = async () => {
@@ -46,6 +49,25 @@ const OrderBook: React.FC<OrderBookProps> = ({ ticker }) => {
             bids: bids ?? []
         })
     };
+
+    const depthUpdateshandler = (data: any) => {
+        const { updatedAsks, updatedBids } = data;
+        setDepth(prev => ({
+            asks: mergeUpdates(prev.asks, updatedAsks, "desc"),
+            bids: mergeUpdates(prev.bids, updatedBids, "desc")
+        }));
+    };
+
+    const ltpUpdateHandler = (data: any) => {
+        const { lastTradedPrice } = data
+        setLtp(prev => {
+            if (prev?.value === lastTradedPrice) return prev
+            return {
+                value: lastTradedPrice,
+                color: lastTradedPrice > (prev?.value ?? 0) ? 'green' : 'red'
+            }
+        })
+    }
 
     if (error) return null
 
@@ -106,8 +128,9 @@ const OrderBook: React.FC<OrderBookProps> = ({ ticker }) => {
                 );
             })}
 
-            {/* Mid Price
-            <div className="text-center font-semibold text-green-600 py-1 text-sm">77,900.6</div> */}
+            {/* Mid Price */}
+            <div className="text-center font-semibold text-green-600 py-1 text-sm"
+                style={{ color: ltp?.color }}>{ltp?.value}</div>
 
             {/* Bids */}
             {loading && <div>
