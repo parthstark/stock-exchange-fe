@@ -5,6 +5,7 @@ import ProtectedRoute from "./ProtectedRoute";
 import NotFound from "./pages/NotFound";
 import Market from "./pages/Market";
 import Header from "./components/Header";
+import Architecture from "./pages/Architecture";
 
 const ProtectedLayout = ({ children }: { children: React.ReactNode }) => (
   <ProtectedRoute>
@@ -20,6 +21,7 @@ function App() {
     <Routes>
       {/* Public Route */}
       <Route path="/login" element={<Login />} />
+      <Route path="/architecture" element={<Architecture />} />
 
       {/* Protected Routes with persistent Header */}
       <Route
