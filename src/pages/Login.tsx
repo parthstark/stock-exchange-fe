@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useApi } from "../hooks/useApi";
 import { useUser } from "../context/UserContext";
@@ -7,6 +7,7 @@ import { useDemoMode } from "../context/DemoModeContext";
 const Login = () => {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
+    const [feError, setFeError] = useState("");
 
     const { dispatch } = useUser();
     const { demoMode, setDemoMode } = useDemoMode();
@@ -14,8 +15,33 @@ const Login = () => {
 
     const { loading, error, request } = useApi();
 
+    const errorTimeout = useRef<number | null>(null);
+
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
+
+        if (errorTimeout.current) {
+            setFeError("")
+            clearTimeout(errorTimeout.current);
+            errorTimeout.current = null;
+        }
+
+        if (username === "") {
+            setFeError("please enter username");
+            errorTimeout.current = setTimeout(() => {
+                setFeError("")
+            }, 3000);
+            return;
+        }
+
+        if (password === "") {
+            setFeError("please enter password");
+            errorTimeout.current = setTimeout(() => {
+                setFeError("")
+            }, 3000);
+            return;
+        }
+
         const response = await request("/v1/auth/login", "POST", { username, password });
 
         if (response?.token) {
@@ -78,7 +104,7 @@ const Login = () => {
                         onChange={(e) => setPassword(e.target.value)}
                     />
 
-                    {error && <p className="text-red-500 text-sm">{error}</p>}
+                    {(error || feError) && <p className="text-red-500 text-sm">{error ?? feError}</p>}
 
                     <button
                         type="submit"

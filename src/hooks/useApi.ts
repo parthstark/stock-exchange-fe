@@ -27,7 +27,7 @@ export function useApi(): UseApiResponse {
         if (error) {
             const timer = setTimeout(() => {
                 setError(null);
-            }, 2000);
+            }, 3000);
             return () => clearTimeout(timer);
         }
     }, [error]);
