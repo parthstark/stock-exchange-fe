@@ -1,6 +1,6 @@
 const Architecture = () => {
     const handleGithubOnClick = () => {
-        window.open("https://github.com/parthstark", "_blank");
+        window.open("https://github.com/parthstark/stock-exchange-be", "_blank");
     };
 
     return (
