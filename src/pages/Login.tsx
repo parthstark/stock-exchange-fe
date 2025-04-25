@@ -115,9 +115,11 @@ const Login = () => {
                     </button>
                 </form>
 
-                <div className="absolute bottom-5 cursor-pointer font-light text-sm text-gray-700 hover:scale-110 transition"
-                    onClick={handleViewArchitectureOnClick}
-                >view working architecture</div>
+                {demoMode &&
+                    <div className="absolute bottom-25 cursor-pointer font-light text-sm text-gray-700 hover:scale-110 transition animate-bounce"
+                        onClick={handleViewArchitectureOnClick}
+                    >view working architecture</div>
+                }
             </div>
         </div>
     );
